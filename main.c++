@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-
 using namespace std;
 
 class Bank; // Forward declaration
@@ -13,10 +12,9 @@ class User {
 protected:
     string username;
     string password;
-    string name;
 
 public:
-    User(string uname, string pwd, string nm) : username(uname), password(pwd), name(nm) {}
+    User(string uname, string pwd) : username(uname), password(pwd) {}
 
     // Getter function for username
     string getUsername() const {
@@ -29,7 +27,7 @@ public:
 // Admin class
 class Admin : public User {
 public:
-    Admin(string uname, string pwd, string nm) : User(uname, pwd, nm) {}
+    Admin(string uname, string pwd) : User(uname, pwd) {}
 
     void menu(Bank& bank) override;
 };
@@ -37,7 +35,7 @@ public:
 // Employee class
 class Employee : public User {
 public:
-    Employee(string uname, string pwd, string nm) : User(uname, pwd, nm) {}
+    Employee(string uname, string pwd) : User(uname, pwd) {}
 
     void menu(Bank& bank) override;
 };
@@ -49,10 +47,12 @@ private:
     string contactInfo;
 
 public:
-    Customer(string uname, string pwd, string nm, string addr, string contact) : 
-        User(uname, pwd, nm), address(addr), contactInfo(contact) {}
+    Customer(string uname, string pwd, string addr, string contact) : 
+        User(uname, pwd), address(addr), contactInfo(contact) {}
 
     void menu(Bank& bank) override;
+
+    static void createCustomer(Bank& bank);
 };
 
 // Bank class
@@ -129,28 +129,28 @@ void Bank::viewBankInfo() const {
 // function to prompt for admin password
 bool promptAdminPassword() {
     string adminPwd;
-    cout << "Enter admin password: ";
-    cin >> adminPwd;
+    std::cout << "Enter admin password: ";
+    std::cin >> adminPwd;
     return (adminPwd == "adminpassword8");
 }
 
 int  createEmployee(Bank& bank) {
     if (!promptAdminPassword()) {
-        cout << "Incorrect admin password. Employee creation failed.\n";
+        std::cout << "Incorrect admin password. Employee creation failed.\n";
         return 0; // Return to the main menu after a failed attempt
     }
 
     string uname, pwd, name;
-    cout << "Enter employee username: ";
-    cin >> uname;
-    cout << "Enter employee password: ";
-    cin >> pwd;
-    cout << "Enter employee full name: ";
-    cin >> name;
-    cin.ignore();
+    std::cout << "Enter employee username: ";
+    std::cin >> uname;
+    std::cout << "Enter employee password: ";
+    std::cin >> pwd;
+    std::cout << "Enter employee full name: ";
+    std::cin >> name;
+    std::cin.ignore();
 
     // Create an Employee object
-    Employee* employee = new Employee(uname, pwd, name);
+    Employee* employee = new Employee(uname, pwd);
 
     // Add the Employee object to the bank
     bank.addUser(employee);
@@ -161,17 +161,58 @@ int  createEmployee(Bank& bank) {
         // Write username and password to the file
         outFile << uname << " " << pwd << endl;
         outFile.close(); // Close the file
-        cout << "Employee created successfully and credentials stored in file.\n";
+        std::cout << "Employee created successfully and credentials stored in file.\n";
     } else {
-        cout << "Error: Unable to open file for writing.\n";
+        std::cout << "Error: Unable to open file for writing.\n";
     }
     return 0;
+}
+
+void createCustomer(Bank& bank) {
+    string firstName, lastName, county, username, password;
+    int age;
+    int phoneNumber;
+
+    std::cout << "Enter first name: ";
+    std::cin >> firstName;
+    std::cout << "Enter last name: ";
+    std::cin >> lastName;
+    std::cout << "Enter age: ";
+    std::cin >> age;
+    std::cout << "Enter county: ";
+    std::cin >> county;
+    std::cout << "Enter phone number: ";
+    std::cin >> phoneNumber;
+    std::cout << "Almost there :)" << endl;
+    std::cout << "Enter username: ";
+    std::cin >> username;
+    std::cout << "Enter password: ";
+    std::cin >> password;
+
+    string uname = firstName + lastName;
+
+    Customer customer(uname, password, "", "");
+
+    bank.addUser(&customer);
+
+    ofstream outFile("customer_credentials.txt", ios::app); //opens file in append mode
+    if (outFile.is_open()){
+        outFile << username << " " << password << endl;
+        outFile.close();
+        cout << "Customer created successfully";
+    } else {
+        cout << "Error: Unable to open file for writing.\n";
+        return;
+    }
 }
 
 void mainMenu() {
     Bank bank; // Create Bank instance
 
     int choice1, choice2, choice3;
+    string adminPasscode;
+    string adminName;
+
     do {
         cout << "Welcome to Ventura Bank Management System\n";
         cout << "Do you want to?\n";
@@ -191,7 +232,18 @@ void mainMenu() {
                 cin >> choice2;
 
                 switch (choice2) {
-                    // Implement login functionality
+                    case 1:
+                        cout << "Enter admin username: ";
+                        cin >> adminName;
+                        cout << "Enter admin password: ";
+                        cin >> adminPasscode;
+
+                        if (adminName == "ventura" && adminPasscode == "adminpassword8") {
+                            cout << "Login Successful";
+                        } else {
+                            cout << "Login Unsuccessful. Try again!";
+                            mainMenu();
+                        }
                 }
                 break;
             case 2:
@@ -206,7 +258,7 @@ void mainMenu() {
                         createEmployee(bank);
                         break;
                     case 2:
-                        cout << "Customer creation coming soon!\n";
+                        createCustomer(bank);
                         break;
                     case 3:
                         break; // Return to main menu

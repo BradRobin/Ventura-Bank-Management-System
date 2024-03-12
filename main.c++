@@ -179,6 +179,10 @@ void createCustomer(Bank& bank) {
     std::cin >> lastName;
     std::cout << "Enter age: ";
     std::cin >> age;
+    if (age < 18){
+        std::cout << "Too young to create a bank customer account!" << endl << "Try again" << endl;
+        createCustomer(bank);
+    }
     std::cout << "Enter county: ";
     std::cin >> county;
     std::cout << "Enter phone number: ";
@@ -199,11 +203,53 @@ void createCustomer(Bank& bank) {
     if (outFile.is_open()){
         outFile << username << " " << password << endl;
         outFile.close();
-        cout << "Customer created successfully";
+        std::cout << "Customer created successfully";
     } else {
-        cout << "Error: Unable to open file for writing.\n";
+        std::cout << "Error: Unable to open file for writing.\n";
         return;
     }
+}
+
+bool customerLogin(const string& customerUsername, const string& customerPassword){
+    ifstream inFile("customer_credentials.txt");
+    if (!inFile.is_open()){
+        std::cout << "Error: Unable to open customer credentials file.\n";
+        return false;
+    }
+    string fileUsername, filePassword;
+    while (inFile >> fileUsername >> filePassword){
+        if (fileUsername == customerUsername && filePassword == customerPassword){
+            inFile.close();
+            return true; // customerUsername and customerPassword match
+        }
+    }
+    inFile.close();
+    return false; // No matching username and password found
+}
+
+bool employeeLogin(const string& employeeUsername, const string& employeePassword){
+    ifstream inFile("employee_credentials.txt");
+    if (!inFile.is_open()){
+        cout << "Error: Unable to open employee credentials file." << endl;
+        return false;
+    }
+    string fileUsername, filePassword;
+    while (inFile >> fileUsername >> filePassword){
+        if (fileUsername == employeeUsername && filePassword == employeePassword){
+            inFile.close();
+            return true;
+        }
+    }
+    inFile.close();
+    return false;
+}
+
+void customerMenu(const string& customerUsername){
+    std::cout << "Welcome, " << customerUsername << endl;
+}
+
+void employeeMenu(const string& employeeUsername){
+    std::cout << "Welcome, " << employeeUsername << endl;
 }
 
 void mainMenu() {
@@ -212,46 +258,80 @@ void mainMenu() {
     int choice1, choice2, choice3;
     string adminPasscode;
     string adminName;
+    string customerUsername;
+    string customerPassword;
+    string employeeUsername;
+    string employeePassword;
+
 
     do {
-        cout << "Welcome to Ventura Bank Management System\n";
-        cout << "Do you want to?\n";
-        cout << "1. Login\n";
-        cout << "2. Sign up\n";
-        cout << "3. Exit\n";
-        cin >> choice1;
+        std::cout << "Welcome to Ventura Bank Management System\n";
+        std::cout << "Do you want to?\n";
+        std::cout << "1. Login\n";
+        std::cout << "2. Sign up\n";
+        std::cout << "3. Exit\n";
+        std::cin >> choice1;
 
         switch (choice1) {
             case 1:
-                cout << "Welcome to Ventura Bank Management System\n";
-                cout << "1. Admin Login\n";
-                cout << "2. Employee Login\n";
-                cout << "3. Customer Login\n";
-                cout << "4. Exit\n";
-                cout << "Enter your choice: ";
-                cin >> choice2;
+                std::cout << "Welcome to Ventura Bank Management System\n";
+                std::cout << "1. Admin Login\n";
+                std::cout << "2. Employee Login\n";
+                std::cout << "3. Customer Login\n";
+                std::cout << "4. Exit\n";
+                std::cout << "Enter your choice: ";
+                std::cin >> choice2;
 
                 switch (choice2) {
                     case 1:
-                        cout << "Enter admin username: ";
-                        cin >> adminName;
-                        cout << "Enter admin password: ";
-                        cin >> adminPasscode;
+                        std::cout << "Enter admin username: ";
+                        std::cin >> adminName;
+                        std::cout << "Enter admin password: ";
+                        std::cin >> adminPasscode;
 
                         if (adminName == "ventura" && adminPasscode == "adminpassword8") {
-                            cout << "Login Successful";
+                            std::cout << "Login Successful";
                         } else {
-                            cout << "Login Unsuccessful. Try again!";
+                            std::cout << "Login Unsuccessful. Try again!";
                             mainMenu();
                         }
+                        break;
+
+                    case 2:
+                        std::cout << "Enter your username: ";
+                        std::cin >> employeeUsername;
+                        std::cout << "Enter your username: ";
+                        std::cin >> employeePassword;
+
+                        if (employeeLogin(employeeUsername, employeePassword)){
+                            std::cout << "Login successful!" << endl;
+                            employeeMenu(employeeUsername);
+                        } else {
+                            std::cout << "Invalid username or password. Please try again" << endl;
+                        }
+                        break;
+
+                    case 3:
+                        std::cout << "Enter your username: ";
+                        std::cin >> customerUsername;
+                        std::cout << "Enter your password: ";
+                        std::cin >> customerPassword;
+
+                        if (customerLogin(customerUsername, customerPassword)){
+                            std::cout << "Login successful!" << endl;
+                            customerMenu(customerUsername);
+                        } else {
+                            std::cout << "Invalid username or password." << endl;
+                        }
+                        break;
                 }
                 break;
             case 2:
-                cout << "Select one\n";
-                cout << "1. Create employee\n";
-                cout << "2. Create customer\n";
-                cout << "3. Return to main menu\n";
-                cin >> choice3;
+                std::cout << "Select one\n";
+                std::cout << "1. Create employee\n";
+                std::cout << "2. Create customer\n";
+                std::cout << "3. Return to main menu\n";
+                std::cin >> choice3;
 
                 switch (choice3) {
                     case 1:
@@ -263,14 +343,14 @@ void mainMenu() {
                     case 3:
                         break; // Return to main menu
                     default:
-                        cout << "Invalid choice.\n";
+                        std::cout << "Invalid choice.\n";
                 }
                 break;
             case 3:
-                cout << "Exiting program. Goodbye!\n";
+                std::cout << "Exiting program. Goodbye!\n";
                 return; // Exit the program
             default:
-                cout << "Invalid choice.\n";
+                std::cout << "Invalid choice.\n";
         }
     } while (true); // Keep looping until the user chooses to exit
 }

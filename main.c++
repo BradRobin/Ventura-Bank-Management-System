@@ -2,6 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstdlib> // for rand() and srand()
+#include <ctime> //for time()
 
 using namespace std;
 
@@ -45,14 +47,22 @@ class Customer : public User {
 private:
     string address;
     string contactInfo;
+    string nationalID;
+    string pin;
+    double accountBalance;
+    string accountNumber;
 
 public:
     Customer(string uname, string pwd, string addr, string contact) : 
-        User(uname, pwd), address(addr), contactInfo(contact) {}
+        User(uname, pwd), address(addr), contactInfo(contact), accountBalance(0.0) {}
 
     void menu(Bank& bank) override;
 
-    static void createCustomer(Bank& bank);
+    void createCustomerAccount();
+    //Getter function for username
+    string getUsername() const {
+        return username;
+    }
 };
 
 // Bank class
@@ -83,11 +93,6 @@ void Admin::menu(Bank& bank) {
 void Employee::menu(Bank& bank) {
     // Employee menu
     // Implement employee-specific functionalities here
-}
-
-void Customer::menu(Bank& bank) {
-    // Customer menu
-    // Implement customer-specific functionalities here
 }
 
 void Bank::addUser(User* user) {
@@ -134,6 +139,16 @@ bool promptAdminPassword() {
     return (adminPwd == "adminpassword8");
 }
 
+string generateAccountNumber(){
+    srand(time(0)); //seed for random number generator
+    string accountNumber = "";
+    for (int i = 0; i < 12; ++i){
+        accountNumber += to_string(rand() % 10); // geberate a random digit and append it to the account number
+    }
+
+    return accountNumber;
+}
+
 int  createEmployee(Bank& bank) {
     if (!promptAdminPassword()) {
         std::cout << "Incorrect admin password. Employee creation failed.\n";
@@ -166,48 +181,6 @@ int  createEmployee(Bank& bank) {
         std::cout << "Error: Unable to open file for writing.\n";
     }
     return 0;
-}
-
-void createCustomer(Bank& bank) {
-    string firstName, lastName, county, username, password;
-    int age;
-    int phoneNumber;
-
-    std::cout << "Enter first name: ";
-    std::cin >> firstName;
-    std::cout << "Enter last name: ";
-    std::cin >> lastName;
-    std::cout << "Enter age: ";
-    std::cin >> age;
-    if (age < 18){
-        std::cout << "Too young to create a bank customer account!" << endl << "Try again" << endl;
-        createCustomer(bank);
-    }
-    std::cout << "Enter county: ";
-    std::cin >> county;
-    std::cout << "Enter phone number: ";
-    std::cin >> phoneNumber;
-    std::cout << "Almost there :)" << endl;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    string uname = firstName + lastName;
-
-    Customer customer(uname, password, "", "");
-
-    bank.addUser(&customer);
-
-    ofstream outFile("customer_credentials.txt", ios::app); //opens file in append mode
-    if (outFile.is_open()){
-        outFile << username << " " << password << endl;
-        outFile.close();
-        std::cout << "Customer created successfully";
-    } else {
-        std::cout << "Error: Unable to open file for writing.\n";
-        return;
-    }
 }
 
 bool customerLogin(const string& customerUsername, const string& customerPassword){
@@ -244,12 +217,62 @@ bool employeeLogin(const string& employeeUsername, const string& employeePasswor
     return false;
 }
 
-void customerMenu(const string& customerUsername){
-    std::cout << "Welcome, " << customerUsername << endl;
+void customerMenu(Customer& customer){
+    int choice;
+    cout << "Welcome, " << customer.getUsername() << "!" << endl;
+    cout << "1. Create a bank account" << endl;
+    cout << "2. Exit" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    switch (choice) {
+        case 1:
+            customer.createCustomerAccount();
+            break;
+        case 2:
+            cout << "Existing customer menu." << endl;
+            break;
+        default:
+            cout << "Invalid choice." << endl;
+    }
 }
 
 void employeeMenu(const string& employeeUsername){
     std::cout << "Welcome, " << employeeUsername << endl;
+}
+
+void Customer::createCustomerAccount(){
+    cout << "Enter your National ID number: ";
+        cin >> nationalID;
+        cout << "Enter a 4-digit PIN for you account: ";
+        cin >> pin;
+        cout << "Enter the inital deposit amount (minimum 500 ksh): ";
+        cin >> accountBalance;
+
+        if (accountBalance < 500){
+            cout << "Initial deposit amount must be at least 500ksh." << endl;
+            return;
+        }
+
+        accountNumber = generateAccountNumber();
+
+        cout << "Your account has been created successfully." << endl;
+        cout << "Account number: " << accountNumber << endl;
+        cout << "Initial balance: " << accountBalance << " ksh" << endl;
+
+        ofstream outFile("customer_accounts.txt", ios::app);
+        if (outFile.is_open()){
+            outFile << "Username: " << username << ", ";
+            outFile << "Account Number: " << accountNumber << ", ";
+            outFile << "Initial Balance: " << accountBalance << " ksh" << endl;
+            outFile.close();
+        } else {
+            cout << "Error: Unable to open file for writing." << endl;
+        }
+}
+
+void Customer::menu(Bank& bank){
+    customerMenu(*this);
 }
 
 void mainMenu() {
@@ -319,7 +342,8 @@ void mainMenu() {
 
                         if (customerLogin(customerUsername, customerPassword)){
                             std::cout << "Login successful!" << endl;
-                            customerMenu(customerUsername);
+                            Customer customer(customerUsername, customerPassword, "", "");
+                            customerMenu(customer);
                         } else {
                             std::cout << "Invalid username or password." << endl;
                         }

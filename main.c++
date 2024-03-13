@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdlib> // for rand() and srand()
 #include <ctime> //for time()
+#include <sstream>
 
 using namespace std;
 
@@ -54,9 +55,48 @@ private:
 
 public:
     Customer(string uname, string pwd, string addr, string contact) : 
-        User(uname, pwd), address(addr), contactInfo(contact), accountBalance(0.0) {}
+        User(uname, pwd), address(addr), contactInfo(contact), accountBalance(0.0) {
+            ifstream inFile("customer_accounts.txt");
+            if (!inFile.is_open()){
+                cout << "Error: Unable to open customer accounts file.\n";
+                return;
+            }
+
+            string fileUsername, fileAccountNumber;
+            double fileBalance;
+            bool found = false;
+
+            //search for the customer's account details in the file
+            while (inFile >> fileUsername >> fileAccountNumber >> fileBalance){
+                if (fileUsername == username){
+                    accountBalance = fileBalance;
+                    found = true;
+                    break;                
+            }
+        }
+
+        inFile.close();
+
+        if (!found){
+            cout << "Customer account not found.\n";
+        }
+    }
 
     void menu(Bank& bank) override;
+
+    double getAccountBalance() const {
+        return accountBalance;
+    }
+
+    void withdraw(double amount){
+        if (amount > accountBalance){
+            cout << "Insufficient funds." <<endl;
+        } else {
+            accountBalance -= amount;
+            cout << "Withdawal of " << amount << " Ksh succesful!" <<endl;
+            cout << "Remaining balance: " << accountBalance << " Ksh" <<endl;
+        }
+    }
 
     void createCustomerAccount();
     //Getter function for username
@@ -81,8 +121,9 @@ public:
 
     // Other functions for bank operations
     void deposit(double amount);
-    void withdraw(double amount);
+    void withdraw(const string& accountNumber, double amount);
     void viewBankInfo() const;
+    void updateCustomerAccount(const Customer& customer);
 };
 
 void Admin::menu(Bank& bank) {
@@ -101,7 +142,7 @@ void Bank::addUser(User* user) {
 
 void Bank::removeUser(const string& username) {
     // Iterate through users and remove the one with the matching username
-    for (auto it = users.begin(); it != users.end(); ++it) {
+    for (vector<User*>::iterator it = users.begin(); it != users.end(); ++it) {
         if ((*it)->getUsername() == username) {
             users.erase(it);
             break; // Once found and removed, exit loop
@@ -109,22 +150,54 @@ void Bank::removeUser(const string& username) {
     }
 }
 
-User* Bank::findUser(const string& username) {
-    // Iterate through users and find the one with the matching usrname
-    for (auto& user : users) {
-        if (user->getUsername() == username) {
-            return user;
-        }
-    }
-    return nullptr;
-}
-
 void Bank::deposit(double amount) {
     // Implement deposit functionality
 }
 
-void Bank::withdraw(double amount) {
-    // Implement withdrawal functionality
+void Bank::withdraw(const string& accountNumber, double amount) {
+    ifstream inFile("customer_accounts.txt");
+    ofstream outFile("temp_customer_accounts.txt");
+
+    if (!inFile.is_open() || !outFile.is_open()){
+        cout << "Error: Unable to open customer accounts file.\n";
+        return;
+    }
+
+    string fileAccountNumber, filePassword, fileUsername;
+    double fileBalance;
+
+    bool found = false;
+
+    while (inFile >> fileAccountNumber >> fileUsername >> filePassword >> fileBalance){
+        cout << "Read account number: " << fileAccountNumber << endl; //debugger
+        if (fileAccountNumber == accountNumber){
+            found = true;
+            if (amount <= fileBalance){
+                fileBalance -= amount;
+            } else {
+                cout << "Insufficient funds." << endl;
+                return;
+            }
+        }
+        //write the updated account information to the temp file 
+        outFile << fileUsername << " " << fileAccountNumber << " " << filePassword << " " <<fileBalance <<endl;
+    }
+
+    inFile.close();
+    outFile.close();
+
+    //remove the old file
+    remove("customer_accounts.txt");
+
+    //rename temp file to original file
+    rename("temp_customer_accounts.txt", "customer_accounts.txt");
+
+    if (!found){
+        cout << "Customer account not found." <<endl;
+    } else {
+        cout << "Withdrawal successful!" << endl;
+    }
+    
 }
 
 void Bank::viewBankInfo() const {
@@ -141,15 +214,15 @@ bool promptAdminPassword() {
 
 string generateAccountNumber(){
     srand(time(0)); //seed for random number generator
-    string accountNumber = "";
+    stringstream ss;
     for (int i = 0; i < 12; ++i){
-        accountNumber += to_string(rand() % 10); // geberate a random digit and append it to the account number
+        ss << rand() % 10; // geberate a random digit and append it to the account number
     }
 
-    return accountNumber;
+    return ss.str();
 }
 
-int  createEmployee(Bank& bank) {
+int createEmployee(Bank& bank) {
     if (!promptAdminPassword()) {
         std::cout << "Incorrect admin password. Employee creation failed.\n";
         return 0; // Return to the main menu after a failed attempt
@@ -182,6 +255,36 @@ int  createEmployee(Bank& bank) {
     }
     return 0;
 }
+
+void createCustomer(Bank& bank) {
+    string uname, pwd, addr, contact;
+    cout << "Enter customer username: ";
+    cin >> uname;
+    cout << "Enter customer password: ";
+    cin >> pwd;
+    cout << "Enter customer address: ";
+    cin >> addr;
+    cout << "Enter customer contact information: ";
+    cin >> contact;
+
+    // Create a Customer object
+    Customer* customer = new Customer(uname, pwd, addr, contact);
+
+    // Add the Customer object to the bank
+    bank.addUser(customer);
+
+    // Store username and password in a text file
+    ofstream outFile("customer_credentials.txt", ios::app); // Open file in append mode
+    if (outFile.is_open()) {
+        // Write username and password to the file
+        outFile << uname << " " << pwd << endl;
+        outFile.close(); // Close the file
+        cout << "Customer created successfully and credentials stored in file.\n";
+    } else {
+        cout << "Error: Unable to open file for writing.\n";
+    }
+}
+
 
 bool customerLogin(const string& customerUsername, const string& customerPassword){
     ifstream inFile("customer_credentials.txt");
@@ -221,7 +324,8 @@ void customerMenu(Customer& customer){
     int choice;
     cout << "Welcome, " << customer.getUsername() << "!" << endl;
     cout << "1. Create a bank account" << endl;
-    cout << "2. Exit" << endl;
+    cout << "2. Check bank balance" << endl;
+    cout << "3. Exit" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
 
@@ -230,15 +334,87 @@ void customerMenu(Customer& customer){
             customer.createCustomerAccount();
             break;
         case 2:
-            cout << "Existing customer menu." << endl;
+            cout << "Your bank balance is: " << customer.getAccountBalance() << endl;
+        case 3:
+            cout << "Exiting customer menu." << endl;
             break;
         default:
             cout << "Invalid choice." << endl;
     }
 }
 
-void employeeMenu(const string& employeeUsername){
-    std::cout << "Welcome, " << employeeUsername << endl;
+void employeeMenu(const string& employeeUsername, Bank& bank){
+    int choice;
+    cout << "Welcome, " << employeeUsername << "!" <<endl;
+    cout << "1. Deposit" << endl;
+    cout << "2. Withdraw" << endl;
+    cout << "3. Exit" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    switch (choice){
+        case 1:
+            double depositAmount;
+            cout << "Enter the deposit amount: ";
+            cin >> depositAmount;
+            bank.deposit(depositAmount);
+            cout << "Deposit successful!" << endl;
+            break;
+        case 2: {
+            string customerAccountNumber;
+            cout << "Enter customer account number: ";
+            cin >> customerAccountNumber;
+
+            ifstream inFile("customer_accounts.txt");
+            ofstream outFile("temp_customer_accounts.txt");
+
+            if (!inFile.is_open() || !outFile.is_open()){
+                cout << "Error: Unable to open customer accounts file.\n";
+                break;
+            }
+
+            string fileAccountNumber, fileUsername, filePassword;
+            double fileBalance;
+            bool found = false;
+
+            while (inFile >> fileAccountNumber >> fileUsername >> filePassword >> fileBalance){
+                if (fileAccountNumber == customerAccountNumber){
+                    found = true;
+                    double withdrawAmount;
+                    cout << "Enter the withdrawal amount: ";
+                    cin >> withdrawAmount;
+                    if (withdrawAmount > fileBalance){
+                        cout << "Insufficient funds." << endl;
+                    } else {
+                        fileBalance -= withdrawAmount;
+                        cout << "Withdrawal of " << withdrawAmount << " Ksh successful!" << endl;
+                        cout << "Remaining balance: " << fileBalance << " Ksh" <<endl;
+                    }
+                }
+                //write the updated account information to the temp file
+                outFile << fileAccountNumber << " " << fileUsername << " " << filePassword << " " << fileBalance << endl;
+            }
+
+            inFile.close();
+            outFile.close();
+
+            //remove the old file
+            remove("customer_accounts.txt");
+
+            //rename temp file to original file
+            rename("temp_customer_accounts.txt", "customer_accounts.txt");
+
+            if (!found){
+                cout << "Customer acount not found." <<endl;
+            }
+            break;
+        }
+        case 3:
+            cout << "Exiting employee menu." << endl;
+            break;
+        default:
+            cout << "Invalid choice." << endl;
+    }
 }
 
 void Customer::createCustomerAccount(){
@@ -328,7 +504,7 @@ void mainMenu() {
 
                         if (employeeLogin(employeeUsername, employeePassword)){
                             std::cout << "Login successful!" << endl;
-                            employeeMenu(employeeUsername);
+                            employeeMenu(employeeUsername, bank);
                         } else {
                             std::cout << "Invalid username or password. Please try again" << endl;
                         }
@@ -343,7 +519,7 @@ void mainMenu() {
                         if (customerLogin(customerUsername, customerPassword)){
                             std::cout << "Login successful!" << endl;
                             Customer customer(customerUsername, customerPassword, "", "");
-                            customerMenu(customer);
+                            customer.menu(bank);
                         } else {
                             std::cout << "Invalid username or password." << endl;
                         }

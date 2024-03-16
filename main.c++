@@ -46,11 +46,14 @@ public:
     void menu(Bank& bank) override {
         int choice;
         do {
-            cout << "\nAdmin Menu" << endl;
-            cout << "1. View Employees" << endl;
-            cout << "2. View Customers" << endl;
-            cout << "3. Exit" <<endl;
-            cout << "Enter your choice: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|                            ADMIN MENU                              |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    1. View Employees                                               |" << endl;
+            cout << "|    2. View Customers                                               |" << endl;
+            cout << "|    3. Exit                                                         |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter your choice: ";
             cin >> choice;
             system("cls");
 
@@ -65,7 +68,9 @@ public:
                     cout << "Exiting Admin Menu..." << endl;
                     break;
                 default:
-                    cout << "Invalid choice. Please enter again." << endl;
+                    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                    cout << "|    Invalid choice. Please enter again.                             |" << endl;
+                    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             }
         } while (choice != 3);
     }
@@ -80,7 +85,9 @@ public:
             }
             inFile.close();
         } else {
-            cout << "Unable to open employee credentials file." << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Unable to open employee credentials file.                       |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         }
     }
 
@@ -94,7 +101,9 @@ public:
             }
             inFile.close();
         } else {
-            cout << "Unable to open customer accounts file." << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Unable to open customer accounts file.                          |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         }
     }
 };
@@ -174,24 +183,35 @@ public:
 
     void createCustomerAccount() {
         system("cls");
-        cout << "Enter your National ID number: ";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|                    CUSTOMER ACCOUNT CREATION PAGE                  |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Enter your National ID number:                                  |" << endl;
         cin >> nationalID;
-        cout << "Enter a 4-digit PIN for your account: ";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Enter a 4-digit PIN for your account:                                |";
         pin = maskInput(4);
-        cout << "Enter the initial deposit amount (minimum 500 Ksh): ";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Enter the initial deposit amount (minimum 500 Ksh):                  |";
         cin >> accountBalance;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
         if (accountBalance < 500){
-            cout << "Initial deposit amount must be at least 500 Ksh." << endl;
+            cout << "|    Initial deposit amount must be at least 500 Ksh.                |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             return;
         }
 
         accountNumber = generateAccountNumber();
         system("cls");
 
-        cout << "Your account has been created successfully." << endl;
-        cout << "Account number: " << accountNumber << endl;
-        cout << "Initial balance: " << accountBalance << " Ksh" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "                           ACCOUNT DETAILS                           |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Account number: |" << accountNumber << "|                       |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|          Initial balance: |" << accountBalance << " Ksh|           |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
         ofstream outFile("customer_accounts.txt", ios::app);
         if (outFile.is_open()){
@@ -294,7 +314,9 @@ void Bank::withdraw(const string& accountNumber, double amount) {
     ofstream outFile("temp_customer_accounts.txt");
 
     if (!inFile.is_open() || !outFile.is_open()){
-        std::cout << "Error: Unable to open customer accounts file.\n";
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Error: Unable to open customer accounts file.                   |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         return;
     }
 
@@ -309,7 +331,9 @@ void Bank::withdraw(const string& accountNumber, double amount) {
             if (amount <= fileBalance){
                 fileBalance -= amount;
             } else {
-                cout << "Insufficient funds." << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Insufficient funds.                                             |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                 inFile.close();
                 outFile.close();
                 return;
@@ -324,7 +348,9 @@ void Bank::withdraw(const string& accountNumber, double amount) {
     outFile.close();
 
     if (!found){
-        cout << "Customer account not found." << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Customer account not found.                                     |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     } else {
         // Remove the old file
         remove("customer_accounts.txt");
@@ -332,7 +358,9 @@ void Bank::withdraw(const string& accountNumber, double amount) {
         // Rename temp file to original file
         rename("temp_customer_accounts.txt", "customer_accounts.txt");
 
-        cout << "Withdrawal successful!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Withdrawal successful!                                          |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 }
 
@@ -342,7 +370,9 @@ void Bank::deposit(const string& accountNumber, double amount) {
     ofstream outFile("temp_customer_accounts.txt");
 
     if (!inFile.is_open() || !outFile.is_open()){
-        cout << "Error: Unable to open customer accounts file.\n";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Error: Unable to open customer accounts file.                   |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         return;
     }
 
@@ -355,7 +385,9 @@ void Bank::deposit(const string& accountNumber, double amount) {
         if (fileAccountNumber == accountNumber){
             found = true;
             fileBalance += amount;
-            std::cout << "Insufficient funds." << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            std::cout << "|    Insufficient funds.                                             |" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             inFile.close();
             outFile.close();
             return;
@@ -369,15 +401,18 @@ void Bank::deposit(const string& accountNumber, double amount) {
     outFile.close();
 
     if (!found){
-        std::cout << "Customer account not found." << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Customer account not found.                                     |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     } else {
         // Remove the old file
         remove("customer_accounts.txt");
 
         // Rename temp file to original file
         rename("temp_customer_accounts.txt", "customer_accounts.txt");
-
-        cout << "Withdrawal successful!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Withdrawal successful!                                          |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 }
 
@@ -388,7 +423,8 @@ void Bank::viewBankInfo() const {
 
 // function to prompt for admin password
 bool promptAdminPassword() {
-    std::cout << "Enter admin password: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "|    Enter admin password:                                           |" << endl;
     string adminPwd = maskInput(20);
     return (adminPwd == "adminpassword8");
 }
@@ -405,85 +441,121 @@ string generateAccountNumber(){
 
 void withdrawFunds(Customer& customer) {
     string username, password;
-    cout << "Enter your username: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your username:                                            |" << endl;
     cin >> username;
-    cout << "Enter your password: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your password:                                            |" << endl;
     cin >> password;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
     // Validate username and password
     if (customer.getUsername() == username && customer.authenticatePassword(password)) {
-        cout << "Authentication successful!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Authentication successful!                                      |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         
         // Display account number and balance
-        cout << "Account Number: " << customer.getAccountNumber() << endl;
-        cout << "Current Balance: " << customer.getAccountBalance() << " Ksh" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Account Number: " << customer.getAccountNumber() << endl;
+        cout << "|    Current Balance: " << customer.getAccountBalance() << " Ksh" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
         double withdrawalAmount;
-        cout << "Enter the amount you want to withdraw: ";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Enter the amount you want to withdraw:                          |" << endl;
         cin >> withdrawalAmount;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
         // Validate withdrawal amount
         if (withdrawalAmount > 0 && withdrawalAmount <= customer.getAccountBalance()) {
             string pin;
-            cout << "Enter your account PIN: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter your account PIN:                                         |" << endl;
             cin >> pin;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
             // Validate PIN
             if (pin == customer.getPin()) {
                 // Process withdrawal
                 customer.withdraw(withdrawalAmount);
-                cout << "Withdrawal successful!" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Withdrawal successful!                                          |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             } else {
-                cout << "Incorrect PIN. Withdrawal failed." << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Incorrect PIN. Withdrawal failed.                               |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             }
         } else {
-            cout << "Invalid withdrawal amount. Withdrawal failed." << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Invalid withdrawal amount. Withdrawal failed.                   |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         }
     } else {
-        cout << "Invalid username or password. Authentication failed." << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Invalid username or password. Authentication failed.            |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 }
 
 
 void depositFunds(Customer& customer) {
     string username;
-    cout << "Enter your username: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your username:                                            |" << endl;
     cin >> username;
-    cout << "Enter your password: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your password:                                            |" << endl;
     string password = maskInput(20);
 
     // Validate username and password
     if (customer.getUsername() == username && customer.authenticatePassword(password)) {
-        cout << "Authentication successful!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Authentication successful!                                      |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         
         // Display account number and balance
-        cout << "Account Number: " << customer.getAccountNumber() << endl;
-        cout << "Current Balance: " << customer.getAccountBalance() << " Ksh" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Account Number: " << customer.getAccountNumber() << endl;
+        cout << "|    Current Balance: " << customer.getAccountBalance() << " Ksh" << endl;
 
         double depositAmount;
-        cout << "Enter the amount you want to deposit: ";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Enter the amount you want to deposit:                           |" << endl;
         cin >> depositAmount;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         system("cls");
 
         // Validate withdrawal amount
         if (depositAmount > 0 && depositAmount <= customer.getAccountBalance()) {
             string pin;
-            cout << "Enter your account PIN: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter your account PIN:                                         |" << endl;
             cin >> pin;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
             // Validate PIN
             if (pin == customer.getPin()) {
                 // Process withdrawal
                 customer.deposit(depositAmount);
-                cout << "deposit successful!" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Deposit successful!                                             |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             } else {
-                cout << "Incorrect PIN. deposit failed." << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Incorrect PIN. deposit failed.                                  |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             }
         } else {
-            cout << "Invalid deposit amount. deposit failed." << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Invalid deposit amount. deposit failed.                         |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         }
     } else {
-        cout << "Invalid username or password. Authentication failed." << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Invalid username or password. Authentication failed.            |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 }
 
@@ -496,45 +568,65 @@ void currencyExchange() {
     float euro_to_ksh_rate = 145.773;
     float pound_to_ksh_rate = 170.647;
     
-    std::cout << "Currency exchange Menu" << endl;
-    std::cout << "1. US Dollar to Ksh" << endl;
-    std::cout << "2. Ksh to US Dollar" << endl;
-    std::cout << "3. Yen to Ksh" << endl;
-    std::cout << "4. Ksh to Yen" << endl;
-    std::cout << "5. Euro to Ksh" << endl;
-    std::cout << "6. Ksh to Euro" << endl;
-    std::cout << "7. Pound to Ksh" << endl;
-    std::cout << "8. Ksh to Pound" << endl;
-    std::cout << "Enter your choice: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "|                         CURRENCY EXCHANGE MENU                     |" << endl;
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "|    1. US Dollar to Ksh                                             |" << endl;
+    std::cout << "|    2. Ksh to US Dollar                                             |" << endl;
+    std::cout << "|    3. Yen to Ksh                                                   |" << endl;
+    std::cout << "|    4. Ksh to Yen                                                   |" << endl;
+    std::cout << "|    5. Euro to Ksh                                                  |" << endl;
+    std::cout << "|    6. Ksh to Euro                                                  |" << endl;
+    std::cout << "|    7. Pound to Ksh                                                 |" << endl;
+    std::cout << "|    8. Ksh to Pound                                                 |" << endl;
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "|    Enter your choice: ";
     cin >> option;
-
-    std::cout << "Enter the amount: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "|    Enter the amount: ";
     cin >> amount;
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
     switch (option){
         case 1:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             std::cout << amount << " USD = " << amount * usd_to_ksh_rate << " Ksh" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 2:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             std::cout << amount << " Ksh = " << amount / usd_to_ksh_rate << " USD" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 3:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             std::cout << amount << " Yen = " << amount * yen_to_ksh_rate << " Ksh" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 4:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             cout << amount << " Ksh = " << amount / yen_to_ksh_rate << " Yen" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 5:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             cout << amount << " Euro = " << amount * euro_to_ksh_rate << " Ksh" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 6:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             cout << amount << " Ksh = " << amount / euro_to_ksh_rate << " Euro" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 7:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             cout << amount << " Pound = " << amount * pound_to_ksh_rate << " Ksh" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 8:
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             cout << amount << " Ksh = " << amount / pound_to_ksh_rate << " Pound" << endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         default:
             cout << "Invalid choice." << endl;
@@ -544,18 +636,24 @@ void currencyExchange() {
 
 int createEmployee(Bank& bank) {
     if (!promptAdminPassword()) {
-        std::cout << "Incorrect admin password. Employee creation failed.\n";
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Incorrect admin password. Employee creation failed.             |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         return 0; // Return to the main menu after a failed attempt
     }
 
     string uname, pwd, name;
-    std::cout << "Enter employee username: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "    Enter employee username:                                         |" << endl;
     std::cin >> uname;
-    std::cout << "Enter employee password: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "Enter employee password:                                             |" << endl;
     pwd = maskInput(20);
-    std::cout << "Enter employee full name: ";
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    std::cout << "Enter employee full name:                                            |" << endl;
     std::cin >> name;
     std::cin.ignore();
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
     // Create an Employee object
     Employee* employee = new Employee(uname, pwd);
@@ -563,29 +661,39 @@ int createEmployee(Bank& bank) {
     // Add the Employee object to the bank
     bank.addUser(employee);
 
-    // Store username and password in a text file
-    ofstream outFile("employee_credentials.txt", ios::app); // Open file in append mode
+    // Store username and password in employee_credentials text file
+    ofstream outFile("employee_credentials.txt", ios::app); 
     if (outFile.is_open()) {
-        // Write username and password to the file
         outFile << uname << " " << pwd << endl;
-        outFile.close(); // Close the file
-        std::cout << "Employee created successfully and credentials stored in file.\n";
+        outFile.close();
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Employee created successfully and credentials stored in file.   |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     } else {
-        std::cout << "Error: Unable to open file for writing.\n";
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Error: Unable to open file for writing.                         |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
     return 0;
 }
 
 void createCustomer(Bank& bank) {
-    string uname, pwd, addr, contact;
-    cout << "Enter customer username: ";
+    string uname, addr, contact;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|                    CUSTOMER ACCOUNT CREATION                       |" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter customer username:                                        |" << endl;
     cin >> uname;
-    cout << "Enter customer password: ";
-    cin >> pwd;
-    cout << "Enter customer address: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter customer password:                                        |" << endl;
+    string pwd = maskInput(20);
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter customer address:                                         |" << endl;
     cin >> addr;
-    cout << "Enter customer contact information: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter customer contact information:                             |" << endl;
     cin >> contact;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
     // Create a Customer object
     Customer* customer = new Customer(uname, pwd, addr, contact);
@@ -593,15 +701,19 @@ void createCustomer(Bank& bank) {
     // Add the Customer object to the bank
     bank.addUser(customer);
 
-    // Store username and password in a text file
+    // Store username and password in customer_credentials text file
     ofstream outFile("customer_credentials.txt", ios::app); // Open file in append mode
     if (outFile.is_open()) {
         // Write username and password to the file
         outFile << uname << " " << pwd << endl;
-        outFile.close(); // Close the file
-        cout << "Customer created successfully and credentials stored in file.\n";
+        outFile.close();
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Customer created successfully and credentials stored in file.   |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     } else {
-        cout << "Error: Unable to open file for writing.\n";
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Error: Unable to open file for writing.                         |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 }
 
@@ -609,7 +721,9 @@ void createCustomer(Bank& bank) {
 bool customerLogin(const string& customerUsername, const string& customerPassword){
     ifstream inFile("customer_credentials.txt");
     if (!inFile.is_open()){
-        std::cout << "Error: Unable to open customer credentials file.\n";
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    Error: Unable to open customer credentials file.                 " << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         return false;
     }
     string fileUsername, filePassword;
@@ -626,7 +740,9 @@ bool customerLogin(const string& customerUsername, const string& customerPasswor
 bool employeeLogin(const string& employeeUsername, const string& employeePassword){
     ifstream inFile("employee_credentials.txt");
     if (!inFile.is_open()){
-        cout << "Error: Unable to open employee credentials file." << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "|    Error: Unable to open employee credentials file.                |" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         return false;
     }
     string fileUsername, filePassword;
@@ -642,13 +758,16 @@ bool employeeLogin(const string& employeeUsername, const string& employeePasswor
 
 void customerMenu(Customer& customer){
     int choice;
-    cout << "Welcome, " << customer.getUsername() << "!" << endl;
-    cout << "1. Create a bank account" << endl;
-    cout << "2. Check bank balance" << endl;
-    cout << "3. Withdraw funds" << endl;
-    cout << "4. Deposit funds" << endl;
-    cout << "5. Exit" << endl;
-    cout << "Enter your choice: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Welcome, " << customer.getUsername() << "!                                                  |" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    1. Create a bank account                                        |" << endl;
+    cout << "|    2. Check bank balance                                           |" << endl;
+    cout << "|    3. Withdraw funds                                               |" << endl;
+    cout << "|    4. Deposit funds                                                |" << endl;
+    cout << "|    5. Exit                                                         |" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your choice:                                              |" << endl;
     cin >> choice;
     system("cls");
 
@@ -658,43 +777,55 @@ void customerMenu(Customer& customer){
             break;
         case 2:
             system("cls");
-            cout << "Your bank balance is: " << customer.getAccountBalance() << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|     Your bank balance is: " << customer.getAccountBalance()<< endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         case 3: {
             system("cls");
-            cout << "Enter your account password: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter your account password:                                    |" << endl;
             string password = maskInput(20);
 
             if (!customer.authenticatePassword(password)){
-                cout << "Invalid password. Access denied." << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Invalid password. Access denied.                                |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                 break;
             }
 
-            cout << "Your account number: " << customer.getAccountNumber() << endl;
-            cout << "Your account balance: " << customer.getAccountBalance() << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Your account number: " << customer.getAccountNumber() << endl;
+            cout << "|    Your account balance: " << customer.getAccountBalance() << endl;
 
             double withdrawalAmount;
-            cout << "Enter the withdrawal amount: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|   Enter the withdrawal amount:                                     |";
             cin >> withdrawalAmount;
 
             customer.withdraw(withdrawalAmount);
             break;
         }
         case 4: { 
-            system("cls"); 
-            cout << "Enter your account password: ";
+            system("cls");
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl; 
+            cout << "|    Enter your account password:                                    |" << endl;
             string password = maskInput(20);
 
             if (!customer.authenticatePassword(password)){
-                cout << "Invalid password. Access denied." << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Invalid password. Access denied.                                |" << endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                 break;
             }
 
-            cout << "Your account number: " << customer.getAccountNumber() << endl;
-            cout << "Your account balance: " << customer.getAccountBalance() << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Your account number: " << customer.getAccountNumber() << endl;
+            cout << "|    Your account balance: " << customer.getAccountBalance() << endl;
 
             double depositAmount;
-            cout << "Enter the deposit amount: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter the deposit amount:                                       |" << endl;
             cin >> depositAmount;
 
             customer.deposit(depositAmount);
@@ -711,30 +842,38 @@ void customerMenu(Customer& customer){
 
 void employeeMenu(const string& employeeUsername, Bank& bank){
     int choice;
-    cout << "Welcome, " << employeeUsername << "!" <<endl;
-    cout << "1. Deposit" << endl;
-    cout << "2. Withdraw" << endl;
-    cout << "3. Currency Exchange" << endl;
-    cout << "4. Exit" << endl;
-    cout << "Enter your choice: ";
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Welcome, " << employeeUsername << "!                                                  |" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    1. Deposit                                                      |" << endl;
+    cout << "|    2. Withdraw                                                     |" << endl;
+    cout << "|    3. Currency Exchange                                            |" << endl;
+    cout << "|    4. Exit                                                         |" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "|    Enter your choice:                                              |" << endl;
     cin >> choice;
     system("cls");
 
     switch (choice){
         case 1: {
             string customerAccountNumber;
-            cout << "Enter customer account number: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter customer account number:                                  |" << endl;
             cin >> customerAccountNumber;
             double depositAmount;
-            cout << "Enter the deposit amount: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter the deposit amount:                                       |" << endl;
             cin >> depositAmount;
             bank.deposit(customerAccountNumber, depositAmount);
-            cout << "Deposit successful!" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Deposit successful!                                             |" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             break;
         }
         case 2: {
             string customerAccountNumber;
-            cout << "Enter customer account number: ";
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "|    Enter customer account number:                                  |" << endl;
             cin >> customerAccountNumber;
 
             ifstream inFile("customer_accounts.txt");
@@ -753,14 +892,19 @@ void employeeMenu(const string& employeeUsername, Bank& bank){
                 if (fileAccountNumber == customerAccountNumber){
                     found = true;
                     double withdrawAmount;
-                    cout << "Enter the withdrawal amount: ";
+                    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                    cout << "|    Enter the withdrawal amount:                                    |" << endl;
                     cin >> withdrawAmount;
                     if (withdrawAmount > fileBalance){
-                        cout << "Insufficient funds." << endl;
+                        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        cout << "|     Insufficient funds.                                            |" << endl;
+                        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                     } else {
                         fileBalance -= withdrawAmount;
-                        cout << "Withdrawal of " << withdrawAmount << " Ksh successful!" << endl;
-                        cout << "Remaining balance: " << fileBalance << " Ksh" <<endl;
+                        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        cout << "|    Withdrawal of " << withdrawAmount << " Ksh successful!" << endl;
+                        cout << "|    Remaining balance: " << fileBalance << " Ksh" <<endl;
+                        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                     }
                 }
                 //write the updated account information to the temp file
@@ -777,7 +921,9 @@ void employeeMenu(const string& employeeUsername, Bank& bank){
             rename("temp_customer_accounts.txt", "customer_accounts.txt");
 
             if (!found){
-                cout << "Customer acount not found." <<endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                cout << "|    Customer account not found.                                     |" <<endl;
+                cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             }
             break;
         }
@@ -806,35 +952,45 @@ void mainMenu() {
     string employeeUsername;
     
     do {
-        std::cout << "Welcome to Ventura Bank Management System\n";
-        std::cout << "Do you want to?\n";
-        std::cout << "1. Login\n";
-        std::cout << "2. Sign up\n";
-        std::cout << "3. Exit\n";
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|             WELCOME TO VENTURA BANK MANAGEMENT SYSTEM              |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        std::cout << "|    1. Login                                                        |" << endl;
+        std::cout << "|    2. Sign up                                                      |" << endl;
+        std::cout << "|    3. Exit                                                         |" << endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         std::cin >> choice1;
 
         switch (choice1) {
             case 1:
                 system("cls");
-                std::cout << "Welcome to Ventura Bank Management System\n";
-                std::cout << "1. Admin Login\n";
-                std::cout << "2. Employee Login\n";
-                std::cout << "3. Customer Login\n";
-                std::cout << "4. Exit\n";
-                std::cout << "Enter your choice: ";
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                std::cout << "|                         VENTURA LOGIN PAGE                         |" << endl;
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                std::cout << "|    1. Admin Login                                                  |" << endl;
+                std::cout << "|    2. Employee Login                                               |" << endl;
+                std::cout << "|    3. Customer Login                                               |" << endl;
+                std::cout << "|    4. Exit                                                         |" << endl;
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                std::cout << "|    Enter your choice:                                              |" << endl;
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                 std::cin >> choice2;
 
                 switch (choice2) {
                     case 1:{
                         system("cls");
-                        std::cout << "Enter admin username: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|                          ADMIN LOGIN PAGE                          |" << endl;
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter admin username:                                           |" << endl;
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                         std::cin >> adminName;
-                        std::cout << "Enter admin password: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter admin password:                                           |" << endl;
                         string adminPasscode = maskInput(20);
                         system("cls");
 
                         if (adminName == "ventura" && adminPasscode == "adminpassword8") {
-                            std::cout << "Login Successful";
                             Admin admin(adminName, adminPasscode);
                             admin.menu(bank);
                         } else {
@@ -845,14 +1001,17 @@ void mainMenu() {
                     }
                     case 2:{
                         system("cls");
-                        std::cout << "Enter your username: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|                          EMPLOYEE LOGIN PAGE                       |" << endl;
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter your username:                                            |" << endl;
                         std::cin >> employeeUsername;
-                        std::cout << "Enter your username: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter your password:                                            |" << endl;
                         string employeePassword = maskInput(20);
                         system("cls");
 
                         if (employeeLogin(employeeUsername, employeePassword)){
-                            std::cout << "Login successful!" << endl;
                             employeeMenu(employeeUsername, bank);
                         } else {
                             std::cout << "Invalid username or password. Please try again" << endl;
@@ -861,14 +1020,17 @@ void mainMenu() {
                     }
                     case 3:
                         system("cls");
-                        std::cout << "Enter your username: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|                         CUSTOMER LOGIN PAGE                        |" << endl;
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter your username:                                            |" << endl;
                         std::cin >> customerUsername;
-                        std::cout << "Enter your password: ";
+                        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                        std::cout << "|    Enter your password:                                            |" << endl;
                         string customerPassword = maskInput(20);
                         system("cls");
 
                         if (customerLogin(customerUsername, customerPassword)){
-                            std::cout << "Login successful!" << endl;
                             Customer customer(customerUsername, customerPassword, "", "");
                             customerMenu(customer);
                         } else {
@@ -879,10 +1041,13 @@ void mainMenu() {
                 break;
             case 2:
                 system("cls");
-                std::cout << "Select one\n";
-                std::cout << "1. Create employee\n";
-                std::cout << "2. Create customer\n";
-                std::cout << "3. Return to main menu\n";
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                std::cout << "|                          SIGN UP PAGE                              |" << endl;
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+                std::cout << "|    1. Create employee                                              |" << endl;
+                std::cout << "|    2. Create customer                                              |" << endl;
+                std::cout << "|    3. Return to main menu                                          |" << endl;
+                std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
                 std::cin >> choice3;
                 system("cls");
 

@@ -20,19 +20,19 @@ string maskInput(int length);
 
 // Base class for all users
 class User {
-protected:
+protected: //Abstraction
     string username;
     string password;
 
 public:
-    User(string uname, string pwd) : username(uname), password(pwd) {}
+    User(string uname, string pwd) : username(uname), password(pwd) {} //encapsulation
 
     // Getter function for username
-    string getUsername() const {
+    string getUsername() const {  //getters
         return username;
     }
 
-    virtual void menu(Bank& bank) = 0; // Virtual function for user menu
+    virtual void menu(Bank& bank) = 0; // Virtual function for user menu //polymorphism
 
     //virtual destructor
     virtual ~User() {}

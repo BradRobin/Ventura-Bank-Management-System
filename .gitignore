@@ -1,0 +1,19 @@
+# Binaries
+*.exe
+*.out
+*.o
+*.obj
+
+# Build
+/build/
+/dist/
+*.zip
+
+# IDE
+.vscode/
+*.user
+*.suo
+
+# Temp
+temp*
+*.tmp

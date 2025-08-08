@@ -1,37 +1,43 @@
-# Ventura Bank Management System
+# Ventura Bank Management System (Refactored)
 
-Ventura Bank Management System is a command-line application designed to manage employee and customer accounts, perform banking operations, and handle currency exchange.
+This is a refactored, safer version of the Ventura Bank Management System.
+Changes made:
+- Modularized C++ source into `src/` (main, auth, bank, util).
+- Replaced plaintext password storage with **salted SHA-256** hashing (requires OpenSSL).
+- Added atomic file writes, basic input validation, and removed `system()` calls.
+- Added `.gitignore`, `LICENSE` (MIT), and a `Makefile`.
+- Removed binary `main.exe` from the repo.
 
-# Features
-1. User Authentication: Users can login with their usernames and passwords.
-2. Employee Management: Employees can view customer accounts and perform banking operations.
-3. Customer Account Management: Customers can create accounts, deposit and withdraw funds, and view their account information.
-4. Currency Exchange: Users can convert between different currencies using current exchange rates
+## Requirements
+- g++ (with C++11 support)
+- OpenSSL development libraries (for password hashing): install `libssl-dev` (Debian/Ubuntu) or equivalent.
 
-# Installation
-To run Ventura Bank Management System, you need a C++ compiler on your system.You can compile the source code using any C++ compiler that supports C++11 or later.
+## Build
+From the project root:
+```bash
+make
+```
 
-1. Clone this repository to your local machine:
+This builds the `ventura_bank` binary in `build/`.
 
-git clone https://github.com/your_username/ventura-bank-management-system.git
+If OpenSSL isn't available, you can still compile by removing `-lcrypto` from the linker flags in the Makefile,
+but password hashing will fail to compile — it's strongly recommended to install OpenSSL.
 
-2. Navigate to the project directory:
+## Run
+```bash
+./build/ventura_bank
+```
 
-cd ventura-bank-management-system
+## Data files format
+- `data/customer_credentials.txt` — stores credentials one per line: `username:salt:hex_hash`
+- `data/customer_accounts.txt` — CSV: `account_number,username,balance,currency`
 
-3. Compile the source code:
+## Security notes
+- Passwords are never stored in plaintext. Use a strong password.
+- For production use, migrate storage from text files to an encrypted database (SQLite with file encryption or an external DB).
+- This project is educational and not intended for real banking use.
 
-g++ main.cpp -o main
+## What I changed
+See source files in `src/`. The `auth` module handles registration/login and uses OpenSSL EVP SHA-256 for hashing.
+Atomic writes are used when updating data files.
 
-4. Run the executable:
-
-./main
-
-# Usage
-Follow the on-screen prompts to navigate through the system. Users can log in as admin, employees, or customers and access their respective functionalities. To create a customer you'll need admin password which is hardcoded as "adminpassword8" admin username is "ventura".
-
-# Contributing
-Contributions are welcome! If you'd like to contribute to this project, please fork this repo and submit a pull request with your changes.
-
-# License
-This project is licensed under the MIT License-see the LICENSE file for details.
